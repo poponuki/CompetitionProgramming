@@ -1,8 +1,10 @@
 package ABC081B;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 
 /**
  * ABC081B - Shift only
@@ -10,25 +12,55 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        List<Integer> list = new ArrayList();
+        int count = 0;
 
         // 整数(a)の入力
         int a = sc.nextInt();
         validateN(a);
 
-        // 文字の入力
-        String s = sc.next();
-        String[] array = s.split(" ");
-
-        // 入力文字数の一致
-        if( array.length != a ){
-            System.out.println("入力文字数が一致していません");
-            return;
+        // 入力文字をすべて登録する
+        for(int i = 0; a > i ; i++ ){
+            list.add(sc.nextInt());
         }
 
-        Long count = Stream.of(array)
-                .filter(s1 -> isEven(Integer.valueOf(s1)))
+        // 偶数判定
+        if(isEven(list)){
+            // 2で割り続けられる回数をカウントする
+            while (true){
+                // 2で割った値をリストに格納する
+                list = list.stream()
+                        .map(i -> ( i / 2 ) )
+                        .collect(Collectors.toList());
+                // 割った回数をカウント
+                count++;
+
+                // 奇数判定の場合は、処理を終了する
+                if(!isEven(list)){
+                    System.out.println(count);
+                    return;
+                }
+            }
+        }else {
+            System.out.println(count);
+            return;
+        }
+    }
+
+    /**
+     * 偶数判定
+     *
+     * リストに含まれる数字が、すべて偶数か判定する
+     *
+     * @param list
+     * @return
+     */
+    static private boolean isEven(List<Integer> list){
+        Long count = list.stream()
+                .filter(i1 -> isEven(i1))
                 .count();
 
+        return ( list.size() == count );
     }
 
     /**
@@ -76,5 +108,4 @@ public class Main {
             return;
         }
     }
-
 }
